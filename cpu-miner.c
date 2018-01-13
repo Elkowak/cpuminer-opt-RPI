@@ -2862,7 +2862,13 @@ BOOL WINAPI ConsoleHandler(DWORD dwType)
 	return true;
 }
 #endif
-
+#ifndef __arm__
+ static inline int cpuid(int code, uint32_t where[4]) {
+	  	asm volatile("cpuid":"=a"(*where),"=b"(*(where+1)),
+	 			"=c"(*(where+2)),"=d"(*(where+3)):"a"(code));
+		 	return (int)where[0];
+			 }
+#endif
 static int thread_create(struct thr_info *thr, void* func)
 {
 	int err = 0;
@@ -2977,7 +2983,8 @@ bool check_cpu_capability ()
      printf(".\n");
 
      // Check for CPU and build incompatibilities
-     if ( !cpu_has_sse2 )
+     /* Disabled
+	 if ( !cpu_has_sse2 )
      {
         printf( "A CPU with SSE2 is required to use cpuminer-opt\n" );
         return false;
@@ -3004,7 +3011,7 @@ bool check_cpu_capability ()
      {
         printf( "A CPU with SHA is required!\n" );
         return false;
-     }
+     }*/
 
      // Determine mining options
      use_sse2 = cpu_has_sse2 && algo_has_sse2;
@@ -3119,7 +3126,7 @@ int main(int argc, char *argv[])
 
         if ( !check_cpu_capability() )
            exit(1);
-
+	   
 	pthread_mutex_init(&stats_lock, NULL);
 	pthread_mutex_init(&g_work_lock, NULL);
 	pthread_mutex_init(&rpc2_job_lock, NULL);

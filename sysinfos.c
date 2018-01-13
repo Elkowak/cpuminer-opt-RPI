@@ -14,7 +14,7 @@
 #ifndef WIN32
 
 #define HWMON_PATH \
- "/sys/devices/platform/coretemp.0/hwmon/hwmon1/temp1_input"
+ "/sys/class/thermal/thermal_zone0/temp"
 #define HWMON_ALT \
  "/sys/class/hwmon/hwmon1/temp1_input"
 #define HWMON_ALT2 \
@@ -57,7 +57,7 @@ static float linux_cputemp(int core)
 }
 
 #define CPUFREQ_PATH \
- "/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq"
+ "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"
 static uint32_t linux_cpufreq(int core)
 {
 	FILE *fd = fopen(CPUFREQ_PATH, "r");
@@ -109,7 +109,7 @@ int cpu_fanpercent()
 	return 0;
 }
 
-#ifndef __arm__
+#if !defined(__arm__) && !defined(__aarch64__)
 static inline void cpuid(int functionnumber, int output[4]) {
 #if defined (_MSC_VER) || defined (__INTEL_COMPILER)
 	// Microsoft or Intel compiler, intrin.h included
@@ -283,7 +283,7 @@ void cpu_getmodelid(char *outbuf, size_t maxsz)
 
 static inline bool has_sha_()
 {
-#ifdef __arm__
+#if defined(__arm__) || defined(__aarch64__)
     return false;
 #else
     int cpu_info[4] = { 0 };
@@ -297,7 +297,7 @@ bool has_sha() { return has_sha_(); }
 
 static inline bool has_sse2_()
 {
-#ifdef __arm__
+#if defined(__arm__) || defined(__aarch64__)
     return false;
 #else
     int cpu_info[4] = { 0 };
@@ -311,7 +311,7 @@ bool has_sse2() { return has_sse2_(); }
 // nehalem and above, no AVX1 on nehalem
 static inline bool has_aes_ni_()
 {
-#ifdef __arm__
+#if defined(__arm__) || defined(__aarch64__)
 	return false;
 #else
 	int cpu_info[4] = { 0 };
@@ -325,7 +325,7 @@ bool has_aes_ni() { return has_aes_ni_(); }
 // westmere and above
 static inline bool has_avx1_()
 {
-#ifdef __arm__
+#if defined(__arm__) || defined(__aarch64__)
         return false;
 #else
         int cpu_info[4] = { 0 };
@@ -339,7 +339,7 @@ bool has_avx1() { return has_avx1_(); }
 // haswell and above
 static inline bool has_avx2_()
 {
-#ifdef __arm__
+#if defined(__arm__) || defined(__aarch64__)
     return false;
 #else
     int cpu_info[4] = { 0 };
@@ -352,7 +352,7 @@ bool has_avx2() { return has_avx2_(); }
 
 static inline bool has_xop_()
 {
-#ifdef __arm__
+#if defined(__arm__) || defined(__aarch64__)
         return false;
 #else
         int cpu_info[4] = { 0 };
@@ -365,7 +365,7 @@ bool has_xop() { return has_xop_(); }
 
 static inline bool has_fma3_()
 {
-#ifdef __arm__
+#if defined(__arm__) || defined(__aarch64__)
         return false;
 #else
         int cpu_info[4] = { 0 };
@@ -378,7 +378,7 @@ bool has_fma3() { return has_fma3_(); }
 
 static inline bool has_sse42_()
 {
-#ifdef __arm__
+#if defined(__arm__) || defined(__aarch64__)
         return false;
 #else
         int cpu_info[4] = { 0 };
@@ -391,7 +391,7 @@ bool has_sse42() { return has_sse42_(); }
 
 static inline bool has_sse_()
 {
-#ifdef __arm__
+#if defined(__arm__) || defined(__aarch64__)
         return false;
 #else
         int cpu_info[4] = { 0 };
@@ -433,7 +433,7 @@ void cpuid_get_highest_function( char* s )
 
 void cpu_bestfeature(char *outbuf, size_t maxsz)
 {
-#ifdef __arm__
+#if defined(__arm__) || defined(__aarch64__)
 	sprintf(outbuf, "ARM");
 #else
 	int cpu_info[4] = { 0 };
@@ -463,7 +463,7 @@ void cpu_bestfeature(char *outbuf, size_t maxsz)
 
 void cpu_brand_string( char* s )
 {
-#ifdef __arm__
+#if defined(__arm__) || defined(__aarch64__)
         sprintf( s, "ARM" );
 #else
     int cpu_info[4] = { 0 };

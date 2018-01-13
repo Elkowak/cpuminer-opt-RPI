@@ -385,5 +385,3 @@ bool register_m7m_algo( algo_gate_t *gate )
   gate->set_work_data_endian  = (void*)&set_work_data_big_endian;
   return true;
 }
-
-
